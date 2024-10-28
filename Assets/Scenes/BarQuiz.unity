@@ -1093,7 +1093,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f49e7e5d96ee473e9e73c52d6d20fc9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeLimit: 30
+  timeLimit: 100
   hzSlider: {fileID: 65627959}
   clickBlocker: {fileID: 1713239732}
   timeLimitText: {fileID: 1729957372}
