@@ -20,8 +20,25 @@ public class ChangeScene : MonoBehaviour
         SceneManager.LoadScene("Title");
     }
 
-    public void ChangeToBarQuiz()
+    public static void ChangeToBarQuiz()
     {
         SceneManager.LoadScene("BarQuiz");
     }
+
+    public static void ChangeToResult()
+    {
+        SceneManager.LoadScene("Result");
+    }
+
+    public void ChangeToTutorial()
+    {
+        SceneManager.LoadScene("Tutorial");
+    }
+
+    public void ChangeToCountDown()
+    {
+        SceneManager.LoadScene("CountDown");
+    }
+
+    
 }

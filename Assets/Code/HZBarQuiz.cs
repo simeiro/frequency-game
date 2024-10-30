@@ -18,75 +18,114 @@ public class HZBarQuiz : MonoBehaviour
 
     private int answerSliderNum;
 
+    private bool questionSoundManage;
+
+    private bool sliderSoundManage;
+
+    private bool timeup;
+
     [SerializeField] private TextMeshProUGUI timeLimitText;
     [SerializeField] private TextMeshProUGUI questionText;
 
     [SerializeField] private TextMeshProUGUI addScoreText;
     [SerializeField] private TextMeshProUGUI sumScoreText;
+
+    [SerializeField] private TextMeshProUGUI sliderHZText;
     
     // Start is called before the first frame update
     void Start()
     {
         DontDestroyOnLoad(this);
         sumScore = 0;
+        questionSoundManage = true;
+        sliderSoundManage = true;
+        timeup = false;
         ResetQuestion();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.A)){OnAnswerButtonClicked();}
+        if(Input.GetKeyDown(KeyCode.D)){OnQuestionSoundButtonClicked();}
+        if(Input.GetKeyDown(KeyCode.F)){OnBarSoundButtonClicked();}
+
+
         if(timeLimit >= elapsedTime)
         {
             elapsedTime += Time.deltaTime;
             int remainingTime = (int)(timeLimit - elapsedTime);
-            timeLimitText.text = remainingTime.ToString();
+            timeLimitText.text = "のこり：" + remainingTime.ToString() + "秒";
         }
         else
         {
-            clickBlocker.SetActive(true);
-            SceneManager.LoadScene("Result");
+            if(timeup){return;}
+            timeup = true;
+            SceneManager.LoadScene("TimeUp");
         }
     }
 
     public void OnSliderValueChanged()
     {
-        questionText.text = "?HZ = " + (int) GetSliderHz() + "HZ";
+        sliderHZText.text = (int) GetSliderHz() + "HZ";
     }
 
     public void OnBarSoundButtonClicked()
     {
+        if(!sliderSoundManage){return;}
+
         AudioSource audio = new GameObject("BarSound").AddComponent<AudioSource>();
         audio.volume = 0.1f;
         audio.PlayOneShot(GetAudioClip(GetSliderHz()));
+        Destroy(audio, audio.clip.length);
+
+        sliderSoundManage = false;
+        Invoke("EnablePlaySliderSound", 1.0f);
     }
 
     public void OnQuestionSoundButtonClicked()
     {
+        if(!questionSoundManage){return;}
+
         AudioSource audio = new GameObject("QuestionSound").AddComponent<AudioSource>();
         audio.volume = 0.1f;
         double answerHz = GetEqualTemperament(answerSliderNum / divideWidth);
         audio.PlayOneShot(GetAudioClip(answerHz));
+        Destroy(audio, audio.clip.length);
+
+        questionSoundManage = false;
+        Invoke("EnablePlayQuestionSound", 1.0f);
     }
 
     public void OnAnswerButtonClicked()
     {
         clickBlocker.SetActive(true);
         double answerHz = GetEqualTemperament(answerSliderNum / divideWidth);
-        questionText.text = (int) answerHz + "HZ = " + (int) GetSliderHz() + "HZ";
+        questionText.text = (int) answerHz + "HZ";
         sumScore += GetAddScore();
-        sumScoreText.text = "Score: " + sumScore;
-        Invoke("ResetQuestion", 2f);
+        sumScoreText.text = "スコア：" + sumScore;
+        Invoke("ResetQuestion", 2.5f);
     }
 
     public void ResetQuestion()
     {
         clickBlocker.SetActive(false);
         addScoreText.gameObject.SetActive(false);
-        questionText.text = "?HZ = " + (int) GetSliderHz() + "HZ";
+        questionText.text = "?HZ";
         answerSliderNum = UnityEngine.Random.Range(-50, 50+1);  
         double answerHz = GetEqualTemperament((int) GetSliderHz() / divideWidth);
         Debug.Log(answerHz);
         OnQuestionSoundButtonClicked();
+    }
+
+    public void EnablePlayQuestionSound()
+    {
+        questionSoundManage = true;
+    }
+
+    public void EnablePlaySliderSound()
+    {
+        sliderSoundManage = true;
     }
 
     public AudioClip GetAudioClip(double hz)
@@ -104,7 +143,7 @@ public class HZBarQuiz : MonoBehaviour
         float[] waveform = new float[totalSamples];
         for (int sample = 0; sample < totalSamples; sample++)
         {
-            waveform[sample] = (sample % oneCycle < halfCycle) ? +1.0f : -1.0f;
+            waveform[sample] = Mathf.Sin(2.0f * Mathf.PI * sample / (float)oneCycle);
         }
 
         // AudioClipに波形を格納

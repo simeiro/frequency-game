@@ -14,7 +14,7 @@ public class Result : MonoBehaviour
         int score = barQuiz.GetComponent<HZBarQuiz>().GetSumScore();
         Destroy(barQuiz);
         Debug.Log(score);
-        scoreText.text = "Your score" + score;
+        scoreText.text = "あなたのスコアは" + score + "でした！";
     }
 
     // Update is called once per frame

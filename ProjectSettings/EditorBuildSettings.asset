@@ -20,4 +20,13 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BarQuiz.unity
     guid: 80014110be0a14360a7eb9df25cb08ba
+  - enabled: 1
+    path: Assets/Scenes/TimeUp.unity
+    guid: 337664ce8448849d99695746ef08c266
+  - enabled: 1
+    path: Assets/Scenes/Tutorial.unity
+    guid: c9988a6480db54da69bf803374ce5263
+  - enabled: 1
+    path: Assets/Scenes/CountDown.unity
+    guid: f9435e331c74045599e44eaeb06639da
   m_configObjects: {}
