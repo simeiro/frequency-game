@@ -22,6 +22,8 @@ public class HZBarQuiz : MonoBehaviour
 
     private bool sliderSoundManage;
 
+    private bool answerButtonManage;
+
     private bool timeup;
 
     [SerializeField] private TextMeshProUGUI timeLimitText;
@@ -39,6 +41,7 @@ public class HZBarQuiz : MonoBehaviour
         sumScore = 0;
         questionSoundManage = true;
         sliderSoundManage = true;
+        answerButtonManage = true;
         timeup = false;
         ResetQuestion();
     }
@@ -76,8 +79,9 @@ public class HZBarQuiz : MonoBehaviour
 
         AudioSource audio = new GameObject("BarSound").AddComponent<AudioSource>();
         audio.volume = 0.1f;
+        audio.pitch = 1.00f;
         audio.PlayOneShot(GetAudioClip(GetSliderHz()));
-        Destroy(audio, audio.clip.length);
+        Destroy(audio, 1.0f);
 
         sliderSoundManage = false;
         Invoke("EnablePlaySliderSound", 1.0f);
@@ -89,9 +93,10 @@ public class HZBarQuiz : MonoBehaviour
 
         AudioSource audio = new GameObject("QuestionSound").AddComponent<AudioSource>();
         audio.volume = 0.1f;
+        audio.pitch = 1.00f;
         double answerHz = GetEqualTemperament(answerSliderNum / divideWidth);
         audio.PlayOneShot(GetAudioClip(answerHz));
-        Destroy(audio, audio.clip.length);
+        Destroy(audio, 1.0f);
 
         questionSoundManage = false;
         Invoke("EnablePlayQuestionSound", 1.0f);
@@ -99,6 +104,8 @@ public class HZBarQuiz : MonoBehaviour
 
     public void OnAnswerButtonClicked()
     {
+        if(!answerButtonManage){return;}
+        answerButtonManage = false;
         clickBlocker.SetActive(true);
         double answerHz = GetEqualTemperament(answerSliderNum / divideWidth);
         questionText.text = (int) answerHz + "HZ";
@@ -115,6 +122,8 @@ public class HZBarQuiz : MonoBehaviour
         answerSliderNum = UnityEngine.Random.Range(-50, 50+1);  
         double answerHz = GetEqualTemperament((int) GetSliderHz() / divideWidth);
         Debug.Log(answerHz);
+
+        answerButtonManage = true;
         OnQuestionSoundButtonClicked();
     }
 
